@@ -1,4 +1,4 @@
-using System;
+using Source.Services.AssetBundle;
 using Source.Services.Mono;
 using Source.Services.ServicesResolver;
 using UnityEngine;
@@ -23,6 +23,7 @@ namespace Application
         {
             _serviceResolver.Add(new MonoService(_serviceResolver));
             _serviceResolver.Add(new ControllerFactory(_serviceResolver));
+            _serviceResolver.Bind<IAssetBundleService, AssetBundleService>(new AssetBundleService(_serviceResolver));
             _serviceResolver.Initialize();
         }
 
