@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 753df5d891f0419a9877756aadbc8e95, type: 3}
   m_Name: BoardConfiguration
   m_EditorClassIdentifier: 
-  _offset: {x: 0, y: 0.5}
-  _area: {x: 4, y: 5}
+  _offset: {x: 0, y: 0}
+  _area: {x: 3.5, y: 6.5}

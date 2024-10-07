@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
 using Source.Features.Gameplay;
+using Source.Features.Gameplay.Items;
 using Source.Features.User;
 using Source.Services.AssetBundle;
+using Source.Services.Input;
 using Source.Services.Mono;
 using Source.Services.ServicesResolver;
 using UnityEngine;
@@ -27,6 +29,7 @@ namespace Source.Application
         {
             _serviceResolver.Add(new MonoService(_serviceResolver));
             _serviceResolver.Add(new ControllerFactory(_serviceResolver));
+            _serviceResolver.Bind<IInputService, InputService>(new InputService(_serviceResolver));
             _serviceResolver.Bind<IAssetBundleService, AssetBundleService>(new AssetBundleService(_serviceResolver));
             
             _serviceResolver.Initialize();

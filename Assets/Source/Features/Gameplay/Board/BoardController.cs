@@ -11,8 +11,8 @@ namespace Source.Features.Gameplay.Board
     public class BoardController : BaseController
     {
         private ItemPool _itemPool;
-        private BoardConfiguration _boardConfiguration;
-        
+        public BoardConfiguration Configuration { get; private set; }
+
         public override async UniTask Initialize()
         {
             var loadItemAssetsRequest = LoadItemAssets();
@@ -20,14 +20,14 @@ namespace Source.Features.Gameplay.Board
             var (loadedItems, boardConfiguration) = await UniTask.WhenAll(loadItemAssetsRequest, loadBoardConfigRequest);
             
             _itemPool = new ItemPool(new ItemFactory(loadedItems));
-            _boardConfiguration = boardConfiguration;
+            Configuration = boardConfiguration;
         }
         
         public void GenerateBoard()
         {
-            Vector2 spawnAreaSize = _boardConfiguration.Area;
-            float xOffset = _boardConfiguration.Offset.x;
-            float yOffset = _boardConfiguration.Offset.y;
+            Vector2 spawnAreaSize = Configuration.Area;
+            float xOffset = Configuration.Offset.x;
+            float yOffset = Configuration.Offset.y;
             
             float halfSpawnAreaWidth = spawnAreaSize.x * 0.5f;
             float halfSpawnAreaHeight = spawnAreaSize.y * 0.5f;
