@@ -27,7 +27,20 @@ namespace Source.Services.ServicesResolver
                 Debug.LogError($"Service: {type.Name}  is already bound!");
             }
         }
-
+        
+        public void Bind<TKey, TValue>(TValue service) where TValue : BaseService where TKey : IDisposable
+        {
+            Type type = typeof(TKey);
+            if (!_services.ContainsKey(type))
+            {
+                _services.Add(type, service);
+            }
+            else
+            {
+                Debug.LogError($"Service: {type.Name}  is already bound!");
+            }
+        }
+        
         internal void Initialize()
         {
             foreach (var service in _services.Values)
@@ -59,7 +72,7 @@ namespace Source.Services.ServicesResolver
         
         public void DisposeService<T>() where T : BaseService
         {
-            if (!TryGet<T>(out T service)) return;
+            if (!TryGet(out T service)) return;
 
             service.Dispose();
             _services.Remove(typeof(T));

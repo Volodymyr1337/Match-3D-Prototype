@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Source.Services.ServicesResolver;
 
 namespace Application
@@ -11,7 +12,7 @@ namespace Application
         protected ControllerFactory ControllerFactory { get; private set; }
         protected ServiceResolver ServiceResolver { get; private set; }
 
-        public abstract void Initialize();
+        public abstract UniTask Initialize();
 
         public void InjectDependencies(ControllerFactory controllerFactory, ServiceResolver serviceResolver)
         {

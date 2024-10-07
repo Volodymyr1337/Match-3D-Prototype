@@ -1,3 +1,6 @@
+using Cysharp.Threading.Tasks;
+using Source.Features.Gameplay;
+using Source.Features.User;
 using Source.Services.AssetBundle;
 using Source.Services.Mono;
 using Source.Services.ServicesResolver;
@@ -12,6 +15,7 @@ namespace Application
         private void Awake()
         {
             InitServices();
+            InitControllers().Forget();
         }
 
         private void OnDestroy()
@@ -27,9 +31,10 @@ namespace Application
             _serviceResolver.Initialize();
         }
 
-        private void InitControllers()
+        private async UniTaskVoid InitControllers()
         {
-            
+            await new UserController().Initialize();
+            await new GameplayController().Initialize();
         }
     }
 }

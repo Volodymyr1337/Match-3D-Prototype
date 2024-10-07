@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Application
@@ -14,9 +15,25 @@ namespace Application
             _assetName = assetName;
         }
 
-        public override void Initialize()
+        public override async UniTask Initialize()
         {
-            LoadView();
+            await LoadView();
+        }
+
+        private async UniTask LoadView()
+        {
+            var resourceRequest = await Resources.LoadAsync<TView>(_assetName);
+
+            // Once the resource is loaded, instantiate it
+            TView loadedAsset = resourceRequest as TView;
+            if (loadedAsset != null)
+            {
+                View = UnityEngine.Object.Instantiate(loadedAsset);
+            }
+            else
+            {
+                Debug.LogError($"Failed to load resource: {_assetName}");
+            }
         }
 
         public override void Dispose()
@@ -25,11 +42,6 @@ namespace Application
             {
                 UnityEngine.Object.Destroy(View.gameObject);
             }
-        }
-
-        private void LoadView()
-        {
-            View = UnityEngine.Object.Instantiate(Resources.Load<TView>(_assetName));
         }
     }
 }
