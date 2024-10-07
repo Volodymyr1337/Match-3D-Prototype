@@ -21,7 +21,7 @@ namespace Source.Utils
         }
 
         
-        public async UniTask StartTimer()
+        public async UniTaskVoid StartTimer()
         {
             _cancellationTokenSource = new CancellationTokenSource();
             var token = _cancellationTokenSource.Token;

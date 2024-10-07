@@ -27,6 +27,11 @@ namespace Source.Application
                 childController.Dispose();
             }
         }
+        
+        protected TService GetService<TService>() where TService : class, IDisposable
+        {
+            return ServiceResolver.Get<TService>();
+        }
 
         protected TController CreateController<TController>(TController controller) where TController : BaseController
         {

@@ -14,7 +14,7 @@ namespace Source.Features.Gameplay.Items
         public bool TryCreateItem(ItemType itemType, out GameObject item)
         {
             item = null;
-            if (!_itemStorage.TryGet(itemType, out GameObject prefab))
+            if (_itemStorage.TryGet(itemType, out GameObject prefab))
             {
                 item = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
             }

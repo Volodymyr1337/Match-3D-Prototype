@@ -34,8 +34,9 @@ namespace Source.Application
 
         private async UniTaskVoid InitControllers()
         {
-            await new UserController().Initialize();
-            await new GameplayController().Initialize();
+            var controllerFactory = _serviceResolver.Get<ControllerFactory>();
+            await controllerFactory.CreateController<UserController>().Initialize();
+            await controllerFactory.CreateController<GameplayController>().Initialize();
         }
     }
 }

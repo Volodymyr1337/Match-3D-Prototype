@@ -22,11 +22,8 @@ namespace Source.Application
 
         private async UniTask LoadView()
         {
-            var assetBundleService = ServiceResolver.Get<IAssetBundleService>();
-            var resourceRequest = await assetBundleService.LoadAsset<TView>(_assetName);
+            var loadedAsset = await GetService<IAssetBundleService>().LoadAsset<TView>(_assetName);
 
-            // Once the resource is loaded, instantiate it
-            TView loadedAsset = resourceRequest as TView;
             if (loadedAsset != null)
             {
                 View = Object.Instantiate(loadedAsset);

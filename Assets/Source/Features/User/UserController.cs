@@ -10,6 +10,7 @@ namespace Source.Features.User
         public override UniTask Initialize()
         {
             // TODO load user data
+            _userModel = new UserModel();
             return UniTask.CompletedTask;
         }
         
