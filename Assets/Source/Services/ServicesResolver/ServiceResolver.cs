@@ -6,16 +6,16 @@ namespace Source.Services.ServicesResolver
 {
     public class ServiceResolver
     {
-        private readonly Dictionary<Type, IDisposable> _services;
+        private readonly Dictionary<Type, BaseService> _services;
         
         public ServiceResolver()
         {
-            _services = new Dictionary<Type, IDisposable>();
+            _services = new Dictionary<Type, BaseService>();
         }
 
         #region Get / Add Services
 
-        public void Add<T>(T service) where T : class, IDisposable
+        public void Add<T>(T service) where T : BaseService
         {
             Type type = typeof(T);
             if (!_services.ContainsKey(type))
@@ -39,9 +39,9 @@ namespace Source.Services.ServicesResolver
             }
         }
         
-        public bool TryGet<T>(out T service) where T : class, IDisposable
+        public bool TryGet<T>(out T service) where T : BaseService
         {
-            bool serviceExists = _services.TryGetValue(typeof(T), out IDisposable iService);
+            bool serviceExists = _services.TryGetValue(typeof(T), out BaseService iService);
             service = iService as T;
             if (service == null)
             {
@@ -57,7 +57,7 @@ namespace Source.Services.ServicesResolver
 
         #region Dispose Services
         
-        public void DisposeService<T>() where T : class, IDisposable
+        public void DisposeService<T>() where T : BaseService
         {
             if (!TryGet<T>(out T service)) return;
 

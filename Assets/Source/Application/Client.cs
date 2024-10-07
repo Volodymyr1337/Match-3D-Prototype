@@ -7,19 +7,20 @@ namespace Application
 {
     public class Client : MonoBehaviour
     {
-        private MonoService _monoService;
-        private ControllerFactory _controllerFactory;
-
-        private ServiceResolver _serviceResolver;
+        private readonly ServiceResolver _serviceResolver = new();
 
         private void Awake()
         {
             InitServices();
         }
 
+        private void OnDestroy()
+        {
+            _serviceResolver.DisposeAllServices();
+        }
+
         private void InitServices()
         {
-            _serviceResolver = new ServiceResolver();
             _serviceResolver.Add(new MonoService(_serviceResolver));
             _serviceResolver.Add(new ControllerFactory(_serviceResolver));
             _serviceResolver.Initialize();

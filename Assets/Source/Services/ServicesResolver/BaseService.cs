@@ -26,7 +26,7 @@ namespace Source.Services.ServicesResolver
 
         #endregion
 
-        protected bool TryGetService<TService>(out TService service) where TService : class, IDisposable
+        protected bool TryGetService<TService>(out TService service) where TService : BaseService
         {
             return ServiceResolver.TryGet(out service);
         }
