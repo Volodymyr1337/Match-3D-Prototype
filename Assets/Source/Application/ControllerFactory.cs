@@ -1,6 +1,6 @@
 using Source.Services.ServicesResolver;
 
-namespace Application
+namespace Source.Application
 {
     public class ControllerFactory : BaseService
     {

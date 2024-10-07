@@ -6,7 +6,7 @@ using Source.Services.Mono;
 using Source.Services.ServicesResolver;
 using UnityEngine;
 
-namespace Application
+namespace Source.Application
 {
     public class Client : MonoBehaviour
     {
@@ -28,6 +28,7 @@ namespace Application
             _serviceResolver.Add(new MonoService(_serviceResolver));
             _serviceResolver.Add(new ControllerFactory(_serviceResolver));
             _serviceResolver.Bind<IAssetBundleService, AssetBundleService>(new AssetBundleService(_serviceResolver));
+            
             _serviceResolver.Initialize();
         }
 

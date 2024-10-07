@@ -28,7 +28,7 @@ namespace Source.Services.ServicesResolver
 
         protected bool TryGetService<TService>(out TService service) where TService : BaseService
         {
-            return ServiceResolver.TryGet(out service);
+            return ServiceResolver.Get(out service);
         }
         
         protected abstract void Initialize();

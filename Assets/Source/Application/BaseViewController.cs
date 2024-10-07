@@ -1,8 +1,8 @@
-using System;
 using Cysharp.Threading.Tasks;
+using Source.Services.AssetBundle;
 using UnityEngine;
 
-namespace Application
+namespace Source.Application
 {
     public abstract class BaseViewController<TView>: BaseController where TView: MonoBehaviour
     {
@@ -22,13 +22,14 @@ namespace Application
 
         private async UniTask LoadView()
         {
-            var resourceRequest = await Resources.LoadAsync<TView>(_assetName);
+            var assetBundleService = ServiceResolver.Get<IAssetBundleService>();
+            var resourceRequest = await assetBundleService.LoadAsset<TView>(_assetName);
 
             // Once the resource is loaded, instantiate it
             TView loadedAsset = resourceRequest as TView;
             if (loadedAsset != null)
             {
-                View = UnityEngine.Object.Instantiate(loadedAsset);
+                View = Object.Instantiate(loadedAsset);
             }
             else
             {
@@ -40,7 +41,7 @@ namespace Application
         {
             if (View != null)
             {
-                UnityEngine.Object.Destroy(View.gameObject);
+                Object.Destroy(View.gameObject);
             }
         }
     }

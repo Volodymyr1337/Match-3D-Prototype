@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Source.Services.ServicesResolver;
 
-namespace Application
+namespace Source.Application
 {
     public abstract class BaseController : IDisposable
     {

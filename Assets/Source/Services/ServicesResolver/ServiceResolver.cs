@@ -52,18 +52,15 @@ namespace Source.Services.ServicesResolver
             }
         }
         
-        public bool TryGet<T>(out T service) where T : BaseService
+        public T Get<T>() where T : class, IDisposable
         {
-            bool serviceExists = _services.TryGetValue(typeof(T), out BaseService iService);
-            service = iService as T;
-            if (service == null)
+            if (!_services.TryGetValue(typeof(T), out BaseService iService))
             {
-                Debug.LogError($"Failed to resolve service {typeof(T)}: " +
-                               $"service exists: {serviceExists} " +
-                               $"IService exists: {iService != null}");
+                Debug.LogError($"Failed to get service {typeof(T)}");
             }
+            T service = iService as T;
 
-            return service != null;
+            return service;
         }
 
         #endregion
@@ -72,7 +69,8 @@ namespace Source.Services.ServicesResolver
         
         public void DisposeService<T>() where T : BaseService
         {
-            if (!TryGet(out T service)) return;
+            var service = Get<T>();
+            if (service == null) return;
 
             service.Dispose();
             _services.Remove(typeof(T));

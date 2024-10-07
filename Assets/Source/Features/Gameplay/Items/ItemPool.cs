@@ -6,26 +6,26 @@ namespace Source.Features.Gameplay.Items
 {
     public class ItemPool
     {
+        private const int POOL_SIZE = 10;
+        
         private readonly Dictionary<ItemType, Queue<GameObject>> _poolDictionary;
 
         private readonly ItemFactory _itemFactory;
 
-        public ItemPool(ItemFactory itemStorage)
+        public ItemPool(ItemFactory itemFactory)
         {
             _poolDictionary = new Dictionary<ItemType, Queue<GameObject>>();
-            _itemFactory = itemStorage;
+            _itemFactory = itemFactory;
+            Initialize();
         }
 
         private void Initialize()
         {
-            
-            int poolSize = 10;
-            
             foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
             {
                 Queue<GameObject> objectPool = new Queue<GameObject>();
 
-                for (int i = 0; i < poolSize; i++)
+                for (int i = 0; i < POOL_SIZE; i++)
                 {
                     if (_itemFactory.TryCreateItem(itemType, out GameObject item))
                     {
@@ -40,8 +40,6 @@ namespace Source.Features.Gameplay.Items
         
         public GameObject GetFromPool(ItemType itemType, Vector3 position, Quaternion rotation)
         {
-            GameObject itemToSpawn;
-
             // Check if we have an available object in the pool
             if (_poolDictionary[itemType].Count == 0)
             {
@@ -52,19 +50,19 @@ namespace Source.Features.Gameplay.Items
                 }
             }
                 
-            itemToSpawn = _poolDictionary[itemType].Dequeue();
+            GameObject spawnedItem = _poolDictionary[itemType].Dequeue();
 
-            itemToSpawn.SetActive(true);
-            itemToSpawn.transform.position = position;
-            itemToSpawn.transform.rotation = rotation;
+            spawnedItem.SetActive(true);
+            spawnedItem.transform.position = position;
+            spawnedItem.transform.rotation = rotation;
 
-            return itemToSpawn;
+            return spawnedItem;
         }
 
-        public void ReturnToPool(ItemType objectType, GameObject objectToReturn)
+        public void ReturnToPool(ItemType objectType, GameObject item)
         {
-            objectToReturn.SetActive(false);
-            _poolDictionary[objectType].Enqueue(objectToReturn);
+            item.SetActive(false);
+            _poolDictionary[objectType].Enqueue(item);
         }
     }
 }
