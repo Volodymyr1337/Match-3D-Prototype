@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Source.Application;
+using Source.Features.Gameplay.Board;
 using Source.Utils;
 using UnityEngine;
 
