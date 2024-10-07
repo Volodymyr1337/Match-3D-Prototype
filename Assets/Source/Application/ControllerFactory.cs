@@ -1,27 +1,29 @@
-// using Services.Mono;
-//
-// namespace Application
-// {
-//     public class ControllerFactory
-//     {
-//         private MonoService _monoService;
-//         
-//         public ControllerFactory(MonoService monoService)
-//         {
-//             _monoService = monoService;
-//         }
-//
-//         public TController CreateController<TController>(TController controller) where TController : BaseController
-//         {
-//             controller.InjectDependencies(this, _monoService);
-//             return controller;
-//         }
-//         
-//         public TController CreateController<TController>() where TController : BaseController, new()
-//         {
-//             TController controller = new TController();
-//             controller.InjectDependencies(this, _monoService);
-//             return controller;
-//         }
-//     }
-// }
+using Source.Services.ServicesResolver;
+
+namespace Application
+{
+    public class ControllerFactory : BaseService
+    {
+
+        public ControllerFactory(ServiceResolver serviceResolver) : base(serviceResolver)
+        {
+        }
+
+        protected override void Initialize() { }
+
+        public override void Dispose() { }
+        
+        public TController CreateController<TController>(TController controller) where TController : BaseController
+        {
+            controller.InjectDependencies(this, ServiceResolver);
+            return controller;
+        }
+        
+        public TController CreateController<TController>() where TController : BaseController, new()
+        {
+            TController controller = new TController();
+            controller.InjectDependencies(this, ServiceResolver);
+            return controller;
+        }
+    }
+}
