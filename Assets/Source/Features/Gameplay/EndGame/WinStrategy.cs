@@ -1,4 +1,5 @@
 using Source.Features.User;
+using Source.Services.AssetBundle;
 using Source.Services.ServicesResolver;
 
 namespace Source.Features.Gameplay.EndGame
@@ -20,7 +21,7 @@ namespace Source.Features.Gameplay.EndGame
 
         private void ShowVictoryUI()
         {
-            
+            _serviceResolver.Get<IAssetBundleService>().LoadAsset<GameOverView>("GameWonView");
         }
 
         private void IncreasePlayerScore()

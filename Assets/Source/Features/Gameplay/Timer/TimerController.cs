@@ -28,7 +28,7 @@ namespace Source.Features.Gameplay.Timer
         
         private void OnTimerComplete()
         {
-            
+            OnOutOfTime?.Invoke();
         }
     }
 }

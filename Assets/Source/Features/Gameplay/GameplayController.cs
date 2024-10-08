@@ -34,6 +34,7 @@ namespace Source.Features.Gameplay
 
             _timerController.OnOutOfTime += OnOutOfTime;
             _boardController.OnAllItemsCollected += OnAllItemsCollected;
+            
             UserModel.OnModelUpdated += OnUserModelUpdated;
             PlayBtnView.OnPlayBtnClicked += StartGame;
             

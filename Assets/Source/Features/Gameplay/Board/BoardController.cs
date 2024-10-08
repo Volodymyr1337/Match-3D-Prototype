@@ -101,6 +101,7 @@ namespace Source.Features.Gameplay.Board
                     _itemPool.ReturnToPool(spawnedItems.Key, spawnedItem);
                 }
             }
+            _spawnedItems.Clear();
         }
 
         // private UniTask LoadLevelConfig(int level)

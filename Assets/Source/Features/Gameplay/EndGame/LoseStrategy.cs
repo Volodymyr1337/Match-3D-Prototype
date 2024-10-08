@@ -1,4 +1,5 @@
 using Source.Features.User;
+using Source.Services.AssetBundle;
 using Source.Services.ServicesResolver;
 using UnityEngine;
 
@@ -19,9 +20,10 @@ namespace Source.Features.Gameplay.EndGame
             PlayLoseSound();
         }
 
-        private void ShowGameOverUI()
+        private async void ShowGameOverUI()
         {
-            
+            var gameOverAsset = await _serviceResolver.Get<IAssetBundleService>().LoadAsset<GameOverView>("GameLostView");
+            Object.Instantiate(gameOverAsset);
         }
 
         private void DeductPlayerPoints()

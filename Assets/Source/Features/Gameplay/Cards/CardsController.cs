@@ -32,6 +32,8 @@ namespace Source.Features.Gameplay.Cards
         public void ShowCards()
         {
             var keys = _boardModel.RemainingItemsOnField.Keys.ToArray();
+            if (keys.Length == 0) return;
+            
             ItemType randomKey = keys[Random.Range(0, keys.Length)];
             CreateCards(randomKey);
             
