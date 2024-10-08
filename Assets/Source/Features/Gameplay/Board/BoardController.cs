@@ -16,6 +16,7 @@ namespace Source.Features.Gameplay.Board
         
         private ItemPool _itemPool;
         public BoardModel BoardModel { get; private set; }
+        private Dictionary<ItemType, List<GameObject>> _spawnedItems = new();
 
         public override async UniTask Initialize()
         {
@@ -45,18 +46,21 @@ namespace Source.Features.Gameplay.Board
                 { ItemType.Cake, 12 }
             };
             
-            BoardModel.RemainingItemsOnField.Clear();
+            ResetBoard();
             var items = itemsToSpawn.Select(item => (item.Key, item.Value)).ToList();
             foreach ((ItemType type, int amount) item in items)
             {
+                List<GameObject> spawnedItems = new List<GameObject>();
                 for (int i = 0; i < item.amount * 2; i++)
                 {
                     float xPos = Random.Range(-halfSpawnAreaWidth, halfSpawnAreaWidth) + xOffset;
                     float yPos = Random.Range(-halfSpawnAreaHeight, halfSpawnAreaHeight) + yOffset;
                     Vector3 spawnPosition = new Vector3(xPos, 2f,  yPos);
                     
-                    _itemPool.GetFromPool(item.type, spawnPosition, Quaternion.identity);
+                    var spawnedItem = _itemPool.GetFromPool(item.type, spawnPosition, Quaternion.identity);
+                    spawnedItems.Add(spawnedItem);
                 }
+                _spawnedItems.Add(item.type, spawnedItems);
                 BoardModel.RemainingItemsOnField.Add(item.type, item.amount);
             }
             BoardModel.UpdateModel();
@@ -84,6 +88,18 @@ namespace Source.Features.Gameplay.Board
             if (remainingItemCount <= 0)
             {
                 OnAllItemsCollected?.Invoke();
+            }
+        }
+
+        private void ResetBoard()
+        {
+            BoardModel.RemainingItemsOnField.Clear();
+            foreach (var spawnedItems in _spawnedItems)
+            {
+                foreach (GameObject spawnedItem in spawnedItems.Value)
+                {
+                    _itemPool.ReturnToPool(spawnedItems.Key, spawnedItem);
+                }
             }
         }
 

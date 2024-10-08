@@ -27,15 +27,15 @@ namespace Source.Utils
             var token = _cancellationTokenSource.Token;
 
             IsRunning = true;
-            int elapsedTime = 0;
+            int remainingTime = (int)_duration;
 
             try
             {
-                while (elapsedTime < _duration)
+                while (remainingTime > 0)
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
-                    elapsedTime++;
-                    OnTick?.Invoke(elapsedTime);
+                    remainingTime--;
+                    OnTick?.Invoke(remainingTime);
                 }
 
                 IsRunning = false;

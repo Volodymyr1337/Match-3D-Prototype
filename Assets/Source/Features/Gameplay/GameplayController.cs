@@ -6,6 +6,7 @@ using Source.Features.Gameplay.Board;
 using Source.Features.Gameplay.Cards;
 using Source.Features.Gameplay.Hole;
 using Source.Features.Gameplay.Items;
+using Source.Features.Gameplay.Timer;
 using Source.Features.User;
 
 namespace Source.Features.Gameplay
@@ -14,6 +15,8 @@ namespace Source.Features.Gameplay
     {
         private BoardController _boardController;
         private CardsController _cardsController;
+        private TimerController _timerController;
+        
         private int _level;
         
         public static event Action<bool> OnGameOver;
@@ -22,11 +25,14 @@ namespace Source.Features.Gameplay
         {
             _boardController = CreateController<BoardController>();
             _cardsController = CreateController<CardsController>();
+            _timerController = CreateController<TimerController>();
+            
             var ingestionPointController = CreateController(new IngestionPointController(OnCollect));
             
-            await UniTask.WhenAll(_cardsController.Initialize(), 
+            await UniTask.WhenAll(_cardsController.Initialize(), _timerController.Initialize(),
                 _boardController.Initialize(), ingestionPointController.Initialize());
-            
+
+            _timerController.OnOutOfTime += OnOutOfTime;
             _boardController.OnAllItemsCollected += OnAllItemsCollected;
             UserModel.OnModelUpdated += OnUserModelUpdated;
             
@@ -36,6 +42,8 @@ namespace Source.Features.Gameplay
         public override void Dispose()
         {
             UserModel.OnModelUpdated -= OnUserModelUpdated;
+            
+            _timerController.OnOutOfTime -= OnOutOfTime;
             _boardController.OnAllItemsCollected -= OnAllItemsCollected;
             base.Dispose();
         }
@@ -51,10 +59,16 @@ namespace Source.Features.Gameplay
             OnGameOver?.Invoke(true);
         }
 
+        private void OnOutOfTime()
+        {
+            OnGameOver?.Invoke(false);
+        }
+
         public void StartGame()
         {
             _boardController.GenerateBoard();
             _cardsController.ShowCards();
+            _timerController.StartTimer();
         }
 
         public void SetLevel(int level)
@@ -66,13 +80,5 @@ namespace Source.Features.Gameplay
         {
             SetLevel(userModel.Level);
         }
-
-        // var timer = new Timer(10);
-        // timer.OnComplete += OnTimerComplete;
-        // timer.StartTimer().Forget();
-        // private void OnTimerComplete()
-        // {
-        //     Debug.Log("game over!");
-        // }
     }
 }
