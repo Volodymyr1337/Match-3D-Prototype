@@ -14,6 +14,7 @@ namespace Source.Features.Gameplay.Hole
         private ItemView _selectedItem;
         private CardsModel _cardsModel;
         private Action<List<ItemView>> _onCollect;
+        private bool _isPointerUp;
         
         public IngestionPointController(Action<List<ItemView>> onCollect) : base("IngestionPoint")
         {
@@ -30,6 +31,7 @@ namespace Source.Features.Gameplay.Hole
             
             CardsModel.OnModelUpdated += OnCardsModelUpdated;
             ServiceResolver.Get<IInputService>().OnPointerUp += OnPointerUp;
+            ServiceResolver.Get<IInputService>().OnPointerDown += OnPointerDown;
         }
 
         public override void Dispose()
@@ -40,6 +42,7 @@ namespace Source.Features.Gameplay.Hole
             
             CardsModel.OnModelUpdated -= OnCardsModelUpdated;
             ServiceResolver.Get<IInputService>().OnPointerUp -= OnPointerUp;
+            ServiceResolver.Get<IInputService>().OnPointerDown -= OnPointerDown;
             base.Dispose();
         }
 
@@ -50,30 +53,39 @@ namespace Source.Features.Gameplay.Hole
 
         private void OnPointerUp()
         {
+            _isPointerUp = true;
             if (_selectedItem != null)
             {
                 View.AddItem(_selectedItem);
             }
 
-            Debug.Log(">>> OnPointerUp " + _selectedItem.name);
             _selectedItem = null;
+        }
+
+        private void OnPointerDown()
+        {
+            _isPointerUp = false;
         }
 
         private void OnItemEnter(Collider other)
         {
+            if (_isPointerUp) return;
+            
             var itemView = other.gameObject.GetComponent<ItemView>();
-            if (itemView != null && itemView.ItemType == ItemType.Apple)
+            if (itemView != null && itemView.ItemType == _cardsModel.TargetItemType)
             {
                 _selectedItem = itemView;
-                Debug.Log(">>> OnItemEnter " + _selectedItem.name);
             }
         }
 
-        private void OnItemExit()
+        private void OnItemExit(Collider other)
         {
-            if (_selectedItem != null)
+            if (_isPointerUp) return;
+            
+            var itemView = other.gameObject.GetComponent<ItemView>();
+            if (itemView != null)
             {
-                View.Remove(_selectedItem);
+                View.Remove(itemView);
             }
             _selectedItem = null;
         }

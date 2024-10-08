@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Source.Features.Gameplay.Items;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Source.Features.Gameplay.Hole
         private List<ItemView> _items = new List<ItemView>();
         
         public event Action<Collider> OnItemEnter;
-        public event Action OnItemExit;
+        public event Action<Collider> OnItemExit;
         public event Action<List<ItemView>> OnCollect;
         
         private bool _collecting = false;
@@ -30,14 +31,13 @@ namespace Source.Features.Gameplay.Hole
         {
             if (_collecting) return;
             
-            OnItemExit?.Invoke();
+            OnItemExit?.Invoke(other);
         }
 
         public void AddItem(ItemView itemView)
         {
             if (_collecting) return;
             
-            Debug.Log(">>> AddItem " + itemView.name);
             if (_items.Count > 0)
             {
                 _items.Add(itemView);
