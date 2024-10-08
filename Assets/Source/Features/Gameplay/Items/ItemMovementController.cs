@@ -14,12 +14,11 @@ namespace Source.Features.Gameplay.Items
         private const float DRAG_HEIGHT = 1.5f;
 
         private Camera _mainCamera;
-        
+
+        private bool _isPlaying = false;
         private bool _isDragging = false;
         private Transform _currentlyDraggingObject;
         private readonly BoardConfiguration _boardConfiguration;
-        private Vector3 _dragVelocity;
-        private Vector3 _lastPosition;
 
         public ItemMovementController(BoardConfiguration boardConfiguration)
         {
@@ -29,7 +28,9 @@ namespace Source.Features.Gameplay.Items
         public override UniTask Initialize()
         {
             _mainCamera = Camera.main;
-            
+
+            GameplayController.OnStartGame += OnStartGame;
+            GameplayController.OnGameOver += OnGameFinished;
             var inputService = GetService<IInputService>();
             inputService.OnPointerDown += StartDrag;
             inputService.OnPointerDrag += DragObject;
@@ -39,6 +40,8 @@ namespace Source.Features.Gameplay.Items
 
         public override void Dispose()
         {
+            GameplayController.OnStartGame += OnStartGame;
+            GameplayController.OnGameOver += OnGameFinished;
             var inputService = GetService<IInputService>();
             inputService.OnPointerDown -= StartDrag;
             inputService.OnPointerDrag -= DragObject;
@@ -49,7 +52,7 @@ namespace Source.Features.Gameplay.Items
 
         private void StartDrag()
         {
-            if (!EventSystem.current.IsPointerOverGameObject())
+            if (!EventSystem.current.IsPointerOverGameObject() || !_isPlaying)
             {
                 return;
             }
@@ -111,6 +114,16 @@ namespace Source.Features.Gameplay.Items
             }
 
             return Vector3.zero;
+        }
+
+        private void OnGameFinished(bool result)
+        {
+            _isPlaying = false;
+        }
+
+        private void OnStartGame()
+        {
+            _isPlaying = true;
         }
     }
 

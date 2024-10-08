@@ -21,4 +21,4 @@ MonoBehaviour:
     amount: 30
   - type: 3
     amount: 30
-  duration: 30
+  duration: 10
