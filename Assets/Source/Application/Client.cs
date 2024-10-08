@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Source.Features.Gameplay;
 using Source.Features.Gameplay.EndGame;
+using Source.Features.TopBar;
 using Source.Features.User;
 using Source.Services.AssetBundle;
 using Source.Services.Input;
@@ -40,14 +41,15 @@ namespace Source.Application
             var controllerFactory = _serviceResolver.Get<ControllerFactory>();
             var userController = controllerFactory.CreateController<UserController>();
             var gameplayController = controllerFactory.CreateController<GameplayController>();
+            var topBarController = controllerFactory.CreateController<TopBarController>();
             
             var initUserController = userController.Initialize();
             var initGameplayController = gameplayController.Initialize();
+            var initTopBar = topBarController.Initialize();
             
-            await UniTask.WhenAll(initUserController, initGameplayController);
-            
+            await UniTask.WhenAll(initUserController, initGameplayController, initTopBar);
+
             controllerFactory.CreateController(new EndGameController(userController.UserModel)).Initialize();
-            gameplayController.SetLevel(userController.UserModel.Level);
             gameplayController.StartGame();
         }
     }

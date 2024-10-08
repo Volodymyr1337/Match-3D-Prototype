@@ -20,7 +20,6 @@ namespace Source.Utils
             IsRunning = false;
         }
 
-        
         public async UniTaskVoid StartTimer()
         {
             _cancellationTokenSource = new CancellationTokenSource();

@@ -6,36 +6,37 @@ using Source.Features.Gameplay.Board;
 using Source.Features.Gameplay.Cards;
 using Source.Features.Gameplay.Hole;
 using Source.Features.Gameplay.Items;
+using Source.Features.Gameplay.LevelConfiguration;
 using Source.Features.Gameplay.Timer;
-using Source.Features.User;
+using Source.Services.AssetBundle;
 
 namespace Source.Features.Gameplay
 {
     public class GameplayController : BaseController
     {
         private BoardController _boardController;
-        private CardsController _cardsController;
         private TimerController _timerController;
-        
-        private int _level;
-        
+        private LevelConfig _levelConfig;
+
         public static event Action<bool> OnGameOver;
+        public static event Action OnCollectItems;
+        public static event Action OnStartGame;
         
         public override async UniTask Initialize()
         {
             _boardController = CreateController<BoardController>();
-            _cardsController = CreateController<CardsController>();
             _timerController = CreateController<TimerController>();
             
+            var cardsController = CreateController<CardsController>();
             var ingestionPointController = CreateController(new IngestionPointController(OnCollect));
             
-            await UniTask.WhenAll(_cardsController.Initialize(), _timerController.Initialize(),
-                _boardController.Initialize(), ingestionPointController.Initialize());
+            await UniTask.WhenAll(LoadLevelConfig(), _boardController.Initialize(), _timerController.Initialize(),
+                ingestionPointController.Initialize(), cardsController.Initialize());
 
+            _boardController.SetLevelConfig(_levelConfig);
             _timerController.OnOutOfTime += OnOutOfTime;
             _boardController.OnAllItemsCollected += OnAllItemsCollected;
             
-            UserModel.OnModelUpdated += OnUserModelUpdated;
             PlayBtnView.OnPlayBtnClicked += StartGame;
             
             CreateController(new ItemMovementController(_boardController.BoardModel.BoardConfiguration)).Initialize();
@@ -43,7 +44,6 @@ namespace Source.Features.Gameplay
 
         public override void Dispose()
         {
-            UserModel.OnModelUpdated -= OnUserModelUpdated;
             PlayBtnView.OnPlayBtnClicked -= StartGame;
             
             _timerController.OnOutOfTime -= OnOutOfTime;
@@ -51,10 +51,16 @@ namespace Source.Features.Gameplay
             base.Dispose();
         }
 
+        public void StartGame()
+        {
+            _timerController.StartTimer(_levelConfig.duration);
+            OnStartGame?.Invoke();
+        }
+
         private void OnCollect(List<ItemView> collectedItems)
         {
             _boardController.Collect(collectedItems);
-            _cardsController.ShowCards();
+            OnCollectItems?.Invoke();
         }
 
         private void OnAllItemsCollected()
@@ -66,22 +72,10 @@ namespace Source.Features.Gameplay
         {
             OnGameOver?.Invoke(false);
         }
-
-        public void StartGame()
+        
+        private async UniTask LoadLevelConfig()
         {
-            _boardController.GenerateBoard();
-            _cardsController.ShowCards();
-            _timerController.StartTimer();
-        }
-
-        public void SetLevel(int level)
-        {
-            _level = level;
-        }
-
-        private void OnUserModelUpdated(UserModel userModel)
-        {
-            SetLevel(userModel.Level);
+            _levelConfig = await GetService<IAssetBundleService>().LoadAsset<LevelConfig>("DefaultLevelConfig");
         }
     }
 }

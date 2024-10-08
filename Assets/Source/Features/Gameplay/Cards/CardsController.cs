@@ -20,17 +20,23 @@ namespace Source.Features.Gameplay.Cards
         {
             _cardsModel = new CardsModel();
             BoardModel.OnModelUpdated += OnBoardModelUpdated;
+            GameplayController.OnStartGame += ShowCards;
+            GameplayController.OnCollectItems += ShowCards;
             await LoadCardsConfiguration();
         }
 
         public override void Dispose()
         {
             BoardModel.OnModelUpdated -= OnBoardModelUpdated;
+            GameplayController.OnStartGame -= ShowCards;
+            GameplayController.OnCollectItems -= ShowCards;
             base.Dispose();
         }
 
-        public void ShowCards()
+        private async void ShowCards()
         {
+            await UniTask.WaitUntil(() => _boardModel.RemainingItemsOnField.Count > 0);
+            
             var keys = _boardModel.RemainingItemsOnField.Keys.ToArray();
             if (keys.Length == 0) return;
             

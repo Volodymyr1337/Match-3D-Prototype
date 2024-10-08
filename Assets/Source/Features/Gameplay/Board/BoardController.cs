@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Source.Application;
 using Source.Features.Gameplay.Items;
+using Source.Features.Gameplay.LevelConfiguration;
 using Source.Services.AssetBundle;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -17,18 +18,27 @@ namespace Source.Features.Gameplay.Board
         private ItemPool _itemPool;
         public BoardModel BoardModel { get; private set; }
         private Dictionary<ItemType, List<GameObject>> _spawnedItems = new();
+        private LevelConfig _levelConfig;
 
         public override async UniTask Initialize()
         {
-            var loadItemAssetsRequest = LoadItemAssets();
-            var loadBoardConfigRequest = LoadBoardConfiguration();
-            var (loadedItems, boardConfiguration) = await UniTask.WhenAll(loadItemAssetsRequest, loadBoardConfigRequest);
+            var loadItemAssets = LoadItemAssets();
+            var loadBoardConfig = LoadBoardConfiguration();
+            var (loadedItems, boardConfiguration) = await UniTask.WhenAll(loadItemAssets, loadBoardConfig);
             
             _itemPool = new ItemPool(new ItemFactory(loadedItems));
             BoardModel = new BoardModel(boardConfiguration);
+            
+            GameplayController.OnStartGame += GenerateBoard;
         }
-        
-        public void GenerateBoard()
+
+        public override void Dispose()
+        {
+            GameplayController.OnStartGame -= GenerateBoard;
+            base.Dispose();
+        }
+
+        private void GenerateBoard()
         {
             Vector2 spawnAreaSize = BoardModel.BoardConfiguration.Area;
             float xOffset = BoardModel.BoardConfiguration.Offset.x;
@@ -36,19 +46,10 @@ namespace Source.Features.Gameplay.Board
             
             float halfSpawnAreaWidth = spawnAreaSize.x * 0.5f;
             float halfSpawnAreaHeight = spawnAreaSize.y * 0.5f;
-            
-            // TODO load level config
-            Dictionary<ItemType, int> itemsToSpawn = new Dictionary<ItemType, int>()
-            {
-                { ItemType.Acorn, 2 },
-                { ItemType.Apple, 2 },
-                { ItemType.Banana, 2 },
-                { ItemType.Cake, 2 }
-            };
-            
+
             ResetBoard();
-            var items = itemsToSpawn.Select(item => (item.Key, item.Value)).ToList();
-            foreach ((ItemType type, int amount) item in items)
+            
+            foreach (var item in _levelConfig.itemsToSpawn)
             {
                 List<GameObject> spawnedItems = new List<GameObject>();
                 for (int i = 0; i < item.amount; i++)
@@ -82,6 +83,11 @@ namespace Source.Features.Gameplay.Board
             CheckRemainingItemCount();
         }
 
+        public void SetLevelConfig(LevelConfig config)
+        {
+            _levelConfig = config;
+        }
+
         private void CheckRemainingItemCount()
         {
             int remainingItemCount = BoardModel.RemainingItemsOnField.Select(item => item.Value).Sum();
@@ -107,11 +113,6 @@ namespace Source.Features.Gameplay.Board
             _spawnedItems.Clear();
         }
 
-        // private UniTask LoadLevelConfig(int level)
-        // {
-        //     
-        // }
-
         private async UniTask<ItemAssetStorage> LoadItemAssets()
         {
             ItemAssetStorage itemAssetStorage =
@@ -121,9 +122,9 @@ namespace Source.Features.Gameplay.Board
         
         private async UniTask<BoardConfiguration> LoadBoardConfiguration()
         {
-            BoardConfiguration itemAssetStorage =
+            BoardConfiguration boardConfiguration =
                 await GetService<IAssetBundleService>().LoadAsset<BoardConfiguration>(nameof(BoardConfiguration));
-            return itemAssetStorage;
+            return boardConfiguration;
         }
     }
 }

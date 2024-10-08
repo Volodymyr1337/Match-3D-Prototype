@@ -20,14 +20,12 @@ namespace Source.Features.Gameplay.Timer
             base.Dispose();
         }
 
-        public void StartTimer()
+        public void StartTimer(int duration)
         {
-            int playTime = 100;
-            
-            _timer = new Utils.Timer(playTime);
+            _timer = new Utils.Timer(duration);
             _timer.OnComplete += OnTimerComplete;
             View.Init(_timer);
-            View.SetTime(playTime);
+            View.SetTime(duration);
             
             _timer.StartTimer().Forget();
         }

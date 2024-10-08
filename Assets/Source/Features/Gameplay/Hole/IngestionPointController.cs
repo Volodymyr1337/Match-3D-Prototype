@@ -72,7 +72,7 @@ namespace Source.Features.Gameplay.Hole
             if (_isPointerUp) return;
             
             var itemView = other.gameObject.GetComponent<ItemView>();
-            if (itemView != null && itemView.ItemType == _cardsModel.TargetItemType)
+            if (itemView != null && _cardsModel != null && itemView.ItemType == _cardsModel.TargetItemType)
             {
                 _selectedItem = itemView;
             }
