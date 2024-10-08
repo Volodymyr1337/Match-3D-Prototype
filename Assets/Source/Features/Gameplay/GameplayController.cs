@@ -35,6 +35,7 @@ namespace Source.Features.Gameplay
             _timerController.OnOutOfTime += OnOutOfTime;
             _boardController.OnAllItemsCollected += OnAllItemsCollected;
             UserModel.OnModelUpdated += OnUserModelUpdated;
+            PlayBtnView.OnPlayBtnClicked += StartGame;
             
             CreateController(new ItemMovementController(_boardController.BoardModel.BoardConfiguration)).Initialize();
         }
@@ -42,6 +43,7 @@ namespace Source.Features.Gameplay
         public override void Dispose()
         {
             UserModel.OnModelUpdated -= OnUserModelUpdated;
+            PlayBtnView.OnPlayBtnClicked -= StartGame;
             
             _timerController.OnOutOfTime -= OnOutOfTime;
             _boardController.OnAllItemsCollected -= OnAllItemsCollected;

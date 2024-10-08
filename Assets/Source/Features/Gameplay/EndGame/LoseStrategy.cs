@@ -1,18 +1,16 @@
 using Source.Features.User;
+using Source.Services.ServicesResolver;
 using UnityEngine;
 
 namespace Source.Features.Gameplay.EndGame
 {
-    public class LoseStrategy : IGameOverStrategy
+    public class LoseStrategy : BaseGameOverStrategy
     {
-        private UserModel _userModel;
-        
-        public LoseStrategy(UserModel userModel)
+        public LoseStrategy(UserModel userModel, ServiceResolver serviceResolver) : base(userModel, serviceResolver)
         {
-            _userModel = userModel;
         }
         
-        public void Execute()
+        public override void Execute()
         {
             ShowGameOverUI();
 

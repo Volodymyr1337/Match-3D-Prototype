@@ -1,18 +1,15 @@
 using Source.Features.User;
-using UnityEngine;
+using Source.Services.ServicesResolver;
 
 namespace Source.Features.Gameplay.EndGame
 {
-    public class WinStrategy : IGameOverStrategy
+    public class WinStrategy : BaseGameOverStrategy
     {
-        private UserModel _userModel;
-        
-        public WinStrategy(UserModel userModel)
+        public WinStrategy(UserModel userModel, ServiceResolver serviceResolver) : base(userModel, serviceResolver)
         {
-            _userModel = userModel;
         }
         
-        public void Execute()
+        public override void Execute()
         {
             ShowVictoryUI();
 

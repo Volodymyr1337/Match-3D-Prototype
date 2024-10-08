@@ -31,11 +31,11 @@ namespace Source.Features.Gameplay.EndGame
 
             if (hasWon)
             {
-                gameOverStrategy = new WinStrategy(_userModel);
+                gameOverStrategy = new WinStrategy(_userModel, ServiceResolver);
             }
             else
             {
-                gameOverStrategy = new LoseStrategy(_userModel);
+                gameOverStrategy = new LoseStrategy(_userModel, ServiceResolver);
             }
 
             gameOverStrategy.Execute();
