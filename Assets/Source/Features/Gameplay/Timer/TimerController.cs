@@ -1,7 +1,5 @@
 using System;
-using Cysharp.Threading.Tasks;
 using Source.Application;
-using UnityEngine;
 
 namespace Source.Features.Gameplay.Timer
 {
@@ -13,11 +11,19 @@ namespace Source.Features.Gameplay.Timer
         
         public TimerController() : base(nameof(TimerView))
         {
+            GameplayController.OnGameOver += OnGameOver;
+        }
+
+        public override void Dispose()
+        {
+            GameplayController.OnGameOver -= OnGameOver;
+            base.Dispose();
         }
 
         public void StartTimer()
         {
-            int playTime = 10;
+            int playTime = 100;
+            
             _timer = new Utils.Timer(playTime);
             _timer.OnComplete += OnTimerComplete;
             View.Init(_timer);
@@ -29,6 +35,11 @@ namespace Source.Features.Gameplay.Timer
         private void OnTimerComplete()
         {
             OnOutOfTime?.Invoke();
+        }
+
+        private void OnGameOver(bool result)
+        {
+            _timer?.StopTimer();
         }
     }
 }

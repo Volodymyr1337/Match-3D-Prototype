@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Source.Features.Gameplay.Items;
 using UnityEngine;
@@ -59,18 +61,22 @@ namespace Source.Features.Gameplay.Hole
             _items.Remove(itemView);
         }
 
-        private void RunHidingAnimation()
+        private async void RunHidingAnimation()
         {
             _collecting = true;
             
             Vector3 midpoint = (_leftPoint.position + _rightPoint.position) / 2;
             float animationTime = 0.5f;
+            List<Task> tweens = new List<Task>();
             foreach (ItemView itemView in _items)
             {
-                itemView.transform.DOMove(midpoint, animationTime).SetEase(Ease.InCubic);
-                itemView.transform.DOScale(2f * Vector3.one, animationTime).SetEase(Ease.InCubic);
+                tweens.Add(itemView.transform.DOMove(midpoint, animationTime)
+                    .SetEase(Ease.InCubic).AsyncWaitForCompletion());
+                tweens.Add(itemView.transform.DOScale(2f * Vector3.one, animationTime)
+                    .SetEase(Ease.InCubic).AsyncWaitForCompletion());
             }
-
+            
+            await Task.WhenAll(tweens);
             DOVirtual.DelayedCall(animationTime, () =>
             {
                 OnCollect?.Invoke(_items);

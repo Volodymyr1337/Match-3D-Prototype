@@ -19,9 +19,10 @@ namespace Source.Features.Gameplay.EndGame
             PlayWinSound();
         }
 
-        private void ShowVictoryUI()
+        private async void ShowVictoryUI()
         {
-            _serviceResolver.Get<IAssetBundleService>().LoadAsset<GameOverView>("GameWonView");
+            var gameOverAsset = await _serviceResolver.Get<IAssetBundleService>().LoadAsset<GameOverView>("GameWonView");
+            UnityEngine.Object.Instantiate(gameOverAsset);
         }
 
         private void IncreasePlayerScore()

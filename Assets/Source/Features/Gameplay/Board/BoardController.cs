@@ -40,10 +40,10 @@ namespace Source.Features.Gameplay.Board
             // TODO load level config
             Dictionary<ItemType, int> itemsToSpawn = new Dictionary<ItemType, int>()
             {
-                { ItemType.Acorn, 12 },
-                { ItemType.Apple, 12 },
-                { ItemType.Banana, 12 },
-                { ItemType.Cake, 12 }
+                { ItemType.Acorn, 2 },
+                { ItemType.Apple, 2 },
+                { ItemType.Banana, 2 },
+                { ItemType.Cake, 2 }
             };
             
             ResetBoard();
@@ -51,7 +51,7 @@ namespace Source.Features.Gameplay.Board
             foreach ((ItemType type, int amount) item in items)
             {
                 List<GameObject> spawnedItems = new List<GameObject>();
-                for (int i = 0; i < item.amount * 2; i++)
+                for (int i = 0; i < item.amount; i++)
                 {
                     float xPos = Random.Range(-halfSpawnAreaWidth, halfSpawnAreaWidth) + xOffset;
                     float yPos = Random.Range(-halfSpawnAreaHeight, halfSpawnAreaHeight) + yOffset;
@@ -98,7 +98,10 @@ namespace Source.Features.Gameplay.Board
             {
                 foreach (GameObject spawnedItem in spawnedItems.Value)
                 {
-                    _itemPool.ReturnToPool(spawnedItems.Key, spawnedItem);
+                    if (spawnedItem.activeSelf)
+                    {
+                        _itemPool.ReturnToPool(spawnedItems.Key, spawnedItem);
+                    }
                 }
             }
             _spawnedItems.Clear();
