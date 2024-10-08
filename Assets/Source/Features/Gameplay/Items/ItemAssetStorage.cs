@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Source.Features.Gameplay.Items
 {
-    [CreateAssetMenu]
     public class ItemAssetStorage : ScriptableObject
     {
         [SerializeField] private List<ItemAsset> _items = new ();

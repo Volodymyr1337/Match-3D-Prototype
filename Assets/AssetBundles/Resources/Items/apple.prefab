@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 6295699512522852244}
   - component: {fileID: 2165098668561516962}
   - component: {fileID: 5438326548580229197}
-  m_Layer: 0
+  - component: {fileID: 2562612799985123975}
+  m_Layer: 3
   m_Name: apple
   m_TagString: Draggable
   m_Icon: {fileID: 0}
@@ -114,7 +115,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774579609525914723}
   serializedVersion: 4
-  m_Mass: 2
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -133,3 +134,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2562612799985123975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1774579609525914723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a721f71a54db416aabbb0fa49a8b28ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemType: 1
+  _rigidbody: {fileID: 5438326548580229197}

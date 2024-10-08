@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using Source.Features.Gameplay;
-using Source.Features.Gameplay.Items;
 using Source.Features.User;
 using Source.Services.AssetBundle;
 using Source.Services.Input;
@@ -38,8 +37,16 @@ namespace Source.Application
         private async UniTaskVoid InitControllers()
         {
             var controllerFactory = _serviceResolver.Get<ControllerFactory>();
-            await controllerFactory.CreateController<UserController>().Initialize();
-            await controllerFactory.CreateController<GameplayController>().Initialize();
+            var userController = controllerFactory.CreateController<UserController>();
+            var gameplayController = controllerFactory.CreateController<GameplayController>();
+            
+            var initUserController = userController.Initialize();
+            var initGameplayController = gameplayController.Initialize();
+            
+            await UniTask.WhenAll(initUserController, initGameplayController);
+            
+            gameplayController.SetLevel(userController.UserModel.Level);
+            gameplayController.StartGame();
         }
     }
 }

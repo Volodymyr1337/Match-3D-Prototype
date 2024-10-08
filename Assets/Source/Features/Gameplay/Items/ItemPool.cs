@@ -55,6 +55,7 @@ namespace Source.Features.Gameplay.Items
             spawnedItem.SetActive(true);
             spawnedItem.transform.position = position;
             spawnedItem.transform.rotation = rotation;
+            spawnedItem.transform.localScale = Vector3.one;
 
             return spawnedItem;
         }

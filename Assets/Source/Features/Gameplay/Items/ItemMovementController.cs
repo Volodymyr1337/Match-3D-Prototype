@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Source.Application;
 using Source.Features.Gameplay.Board;
+using Source.Features.Gameplay.Cards;
 using Source.Services.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,17 +10,16 @@ namespace Source.Features.Gameplay.Items
 {
     public class ItemMovementController : BaseController
     {
-        private const string DRAGGABLE_TAG = "Draggable";
+        private const string ITEM_LAYER = "Tiles";
         private const float DRAG_HEIGHT = 1.5f;
 
         private Camera _mainCamera;
         
         private bool _isDragging = false;
-        private Vector3 _offset;
         private Transform _currentlyDraggingObject;
-        private Rigidbody _currentlyDraggingRigidbody;
-        
         private readonly BoardConfiguration _boardConfiguration;
+        private Vector3 _dragVelocity;
+        private Vector3 _lastPosition;
 
         public ItemMovementController(BoardConfiguration boardConfiguration)
         {
@@ -49,21 +49,18 @@ namespace Source.Features.Gameplay.Items
 
         private void StartDrag()
         {
-            if (EventSystem.current.IsPointerOverGameObject())
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
                 return;
             }
             
             RaycastHit hit;
             Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-            
-            if (Physics.Raycast(ray, out hit, 100f) && hit.transform.CompareTag(DRAGGABLE_TAG))
+            LayerMask layerMask = 1 << LayerMask.NameToLayer(ITEM_LAYER);
+            if (Physics.Raycast(ray, out hit, 100f, layerMask))
             {
                 _currentlyDraggingObject = hit.transform;
-                _offset = _currentlyDraggingObject.position - GetPointerWorldPositionAtHeight();
-
-                _currentlyDraggingRigidbody = _currentlyDraggingObject.GetComponent<Rigidbody>();
-                _currentlyDraggingRigidbody.useGravity = false;
+                _currentlyDraggingObject.GetComponent<ItemView>().Rigidbody.isKinematic = false;
                 
                 _isDragging = true;
             }
@@ -84,35 +81,30 @@ namespace Source.Features.Gameplay.Items
                 float maxY = offset.y + (area.y * 0.5f);
 
                 float clampedX = Mathf.Clamp(targetPosition.x, minX, maxX);
+                float clampedY = Mathf.Clamp(targetPosition.y, 0f, DRAG_HEIGHT);
                 float clampedZ = Mathf.Clamp(targetPosition.z, minY, maxY);
 
-                _currentlyDraggingObject.position = new Vector3(clampedX, targetPosition.y, clampedZ);
-
-                // if (_currentlyDraggingObject.position.y <= DRAG_HEIGHT)
-                // {
-                //     _currentlyDraggingRigidbody.velocity = Vector3.up * _currentlyDraggingRigidbody.mass;
-                // }
-                // else
-                // {
-                //     _currentlyDraggingRigidbody.velocity = Vector3.zero;
-                // }
+                _currentlyDraggingObject.position = new Vector3(clampedX, clampedY, clampedZ);
+                _currentlyDraggingObject.localScale = Vector3.one * 1.5f;
             }
         }
 
         private void StopDrag()
         {
             _isDragging = false;
-            _currentlyDraggingRigidbody.useGravity = true;
+            if (_currentlyDraggingObject != null)
+            {
+                _currentlyDraggingObject.localScale = Vector3.one;
+            }
             _currentlyDraggingObject = null;
-            //_currentlyDraggingRigidbody.constraints = RigidbodyConstraints.FreezePositionY;
         }
         
         private Vector3 GetPointerWorldPositionAtHeight()
         {
             var plane = new Plane( Vector3.up, -DRAG_HEIGHT);
-            Ray ray = _mainCamera.ScreenPointToRay( Input.mousePosition);
+            Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
             float enter;
-            if( plane.Raycast( ray, out enter ) )
+            if (plane.Raycast( ray, out enter))
             {
                 Vector3 rayPoint = ray.GetPoint(enter);
                 return rayPoint;

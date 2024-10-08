@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Source.Features.Gameplay.Board
 {
-    [CreateAssetMenu]
     public class BoardConfiguration : ScriptableObject
     {
         [SerializeField] private Vector2 _offset;
