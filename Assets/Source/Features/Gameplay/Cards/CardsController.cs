@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Source.Application;
@@ -13,6 +14,7 @@ namespace Source.Features.Gameplay.Cards
         private CardsModel _cardsModel;
         private BoardModel _boardModel;
         private CardsConfiguration _cardsConfiguration;
+        private Dictionary<ItemType, CardsView> _cardViews = new Dictionary<ItemType, CardsView>();
 
         public override async UniTask Initialize()
         {
@@ -31,14 +33,13 @@ namespace Source.Features.Gameplay.Cards
         {
             var keys = _boardModel.RemainingItemsOnField.Keys.ToArray();
             ItemType randomKey = keys[Random.Range(0, keys.Length)];
+            CreateCards(randomKey);
             
-            if (!_cardsConfiguration.TryGet(randomKey, out GameObject cards))
+            if (_cardViews.ContainsKey(_cardsModel.TargetItemType))
             {
-                Debug.LogError($"Missing cards for type {randomKey}!");
-                return;
+                _cardViews[_cardsModel.TargetItemType].Hide();
             }
-            
-            Object.Instantiate(cards);
+            _cardViews[randomKey].Show();
             _cardsModel.TargetItem(randomKey);
         }
         
@@ -51,6 +52,21 @@ namespace Source.Features.Gameplay.Cards
         {
             _cardsConfiguration =
                 await GetService<IAssetBundleService>().LoadAsset<CardsConfiguration>(nameof(CardsConfiguration));
+        }
+
+        private void CreateCards(ItemType itemType)
+        {
+            if (!_cardViews.ContainsKey(itemType))
+            {
+                if (!_cardsConfiguration.TryGet(itemType, out CardsView cardsPrefab))
+                {
+                    Debug.LogError($"Missing cards for type {itemType}!");
+                    return;
+                }
+                CardsView cardsView = Object.Instantiate(cardsPrefab);
+            
+                _cardViews.Add(itemType, cardsView);
+            }
         }
     }
 }

@@ -175,6 +175,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2760899298795332030}
+  - component: {fileID: 5160325780883995474}
   m_Layer: 0
   m_Name: AcornCards
   m_TagString: Untagged
@@ -199,3 +200,15 @@ Transform:
   - {fileID: 38264597491422025}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5160325780883995474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8542771964138309585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb6a31c90c734727996b46775692e4aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -13,11 +13,7 @@ MonoBehaviour:
   m_Name: CardsConfiguration
   m_EditorClassIdentifier: 
   _items:
-  - type: 0
-    prefab: {fileID: 8542771964138309585, guid: 552aeb03f462c4ee0bf3460204095355, type: 3}
-  - type: 1
-    prefab: {fileID: 2749073510259222378, guid: 034ff4b13dfd846b593f9301ccf6f83a, type: 3}
-  - type: 2
-    prefab: {fileID: 7713525290526839555, guid: 241a31b2770cf478199cc00f247d3e60, type: 3}
-  - type: 3
-    prefab: {fileID: 3691492249047437678, guid: 7ece81985871c4f03b27855ed9e319b0, type: 3}
+  - {fileID: 5160325780883995474, guid: 552aeb03f462c4ee0bf3460204095355, type: 3}
+  - {fileID: 7558737488194212348, guid: 034ff4b13dfd846b593f9301ccf6f83a, type: 3}
+  - {fileID: 4311340989574007713, guid: 241a31b2770cf478199cc00f247d3e60, type: 3}
+  - {fileID: 2039871073673575823, guid: 7ece81985871c4f03b27855ed9e319b0, type: 3}
