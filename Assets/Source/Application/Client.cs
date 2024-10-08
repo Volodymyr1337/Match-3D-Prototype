@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Source.Features.Gameplay;
+using Source.Features.Gameplay.EndGame;
 using Source.Features.User;
 using Source.Services.AssetBundle;
 using Source.Services.Input;
@@ -45,6 +46,7 @@ namespace Source.Application
             
             await UniTask.WhenAll(initUserController, initGameplayController);
             
+            controllerFactory.CreateController(new EndGameController(userController.UserModel)).Initialize();
             gameplayController.SetLevel(userController.UserModel.Level);
             gameplayController.StartGame();
         }

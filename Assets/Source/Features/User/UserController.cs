@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using Source.Application;
-using Source.Features.Gameplay;
 
 namespace Source.Features.User
 {
@@ -10,23 +9,22 @@ namespace Source.Features.User
 
         public override UniTask Initialize()
         {
-            // TODO load user data
+            // TODO: load user data
             UserModel = new UserModel();
-            
-            GameplayController.OnGameWon += OnGameWon;
+
+            UserModel.OnModelUpdated += SaveUserData;
             return UniTask.CompletedTask;
         }
 
         public override void Dispose()
         {
-            GameplayController.OnGameWon -= OnGameWon;
-            
+            UserModel.OnModelUpdated -= SaveUserData;
             base.Dispose();
         }
 
-        private void OnGameWon()
+        private void SaveUserData(UserModel model)
         {
-            UserModel.IncreaseLevel();
+            // TODO: serialize user data
         }
     }
 }

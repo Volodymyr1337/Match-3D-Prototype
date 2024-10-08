@@ -16,8 +16,7 @@ namespace Source.Features.Gameplay
         private CardsController _cardsController;
         private int _level;
         
-        public static event Action OnGameWon;
-        public static event Action OnGameLost;
+        public static event Action<bool> OnGameOver;
         
         public override async UniTask Initialize()
         {
@@ -49,7 +48,7 @@ namespace Source.Features.Gameplay
 
         private void OnAllItemsCollected()
         {
-            OnGameWon?.Invoke();
+            OnGameOver?.Invoke(true);
         }
 
         public void StartGame()
