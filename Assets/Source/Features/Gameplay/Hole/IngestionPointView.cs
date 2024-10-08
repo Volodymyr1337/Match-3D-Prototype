@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Source.Features.Gameplay.Items;
 using UnityEngine;
@@ -83,6 +82,11 @@ namespace Source.Features.Gameplay.Hole
                 _items.Clear();
                 _collecting = false;
             });
+        }
+
+        public void Clear()
+        {
+            _items.Clear();
         }
     }
 }

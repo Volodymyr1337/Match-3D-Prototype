@@ -28,7 +28,8 @@ namespace Source.Features.Gameplay.Hole
             View.OnItemEnter += OnItemEnter;
             View.OnItemExit += OnItemExit;
             View.OnCollect += OnCollect;
-            
+
+            GameplayController.OnGameOver += OnGameOver;
             CardsModel.OnModelUpdated += OnCardsModelUpdated;
             ServiceResolver.Get<IInputService>().OnPointerUp += OnPointerUp;
             ServiceResolver.Get<IInputService>().OnPointerDown += OnPointerDown;
@@ -41,6 +42,7 @@ namespace Source.Features.Gameplay.Hole
             View.OnCollect -= OnCollect;
             
             CardsModel.OnModelUpdated -= OnCardsModelUpdated;
+            GameplayController.OnGameOver -= OnGameOver;
             ServiceResolver.Get<IInputService>().OnPointerUp -= OnPointerUp;
             ServiceResolver.Get<IInputService>().OnPointerDown -= OnPointerDown;
             base.Dispose();
@@ -93,6 +95,12 @@ namespace Source.Features.Gameplay.Hole
         private void OnCardsModelUpdated(CardsModel cardsModel)
         {
             _cardsModel = cardsModel;
+        }
+
+        private void OnGameOver(bool result)
+        {
+            View.Clear();
+            _selectedItem = null;
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Source.Features.Gameplay
         private BoardController _boardController;
         private TimerController _timerController;
         private LevelConfig _levelConfig;
+        private bool _isActiveGame;
 
         public static event Action<bool> OnGameOver;
         public static event Action OnCollectItems;
@@ -53,6 +54,7 @@ namespace Source.Features.Gameplay
 
         public void StartGame()
         {
+            _isActiveGame = true;
             _timerController.StartTimer(_levelConfig.duration);
             OnStartGame?.Invoke();
         }
@@ -65,11 +67,17 @@ namespace Source.Features.Gameplay
 
         private void OnAllItemsCollected()
         {
+            if (!_isActiveGame) return;
+            
+            _isActiveGame = false;
             OnGameOver?.Invoke(true);
         }
 
         private void OnOutOfTime()
         {
+            if (!_isActiveGame) return;
+            
+            _isActiveGame = false;
             OnGameOver?.Invoke(false);
         }
         
