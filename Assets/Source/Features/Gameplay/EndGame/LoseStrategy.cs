@@ -13,24 +13,22 @@ namespace Source.Features.Gameplay.EndGame
         
         public override void Execute()
         {
-            ShowGameOverUI();
-
             DeductPlayerPoints();
-
+            
+            ShowGameOverUI();
+            
             PlayLoseSound();
         }
 
         private async void ShowGameOverUI()
         {
-            if (_userModel.Lives > 0)
-            {
-                var gameOverAsset = await _serviceResolver.Get<IAssetBundleService>().LoadAsset<GameOverView>("GameLostView");
-                Object.Instantiate(gameOverAsset);
-            }
-            else
+            if (_userModel.Lives == 0)
             {
                 Debug.LogError("TODO: not enough lives -> display shop to buy more...");
             }
+            
+            var gameOverAsset = await _serviceResolver.Get<IAssetBundleService>().LoadAsset<GameOverView>("GameLostView");
+            Object.Instantiate(gameOverAsset);
         }
 
         private void DeductPlayerPoints()
