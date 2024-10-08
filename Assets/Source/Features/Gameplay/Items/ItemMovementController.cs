@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Source.Application;
 using Source.Features.Gameplay.Board;
-using Source.Features.Gameplay.Cards;
 using Source.Services.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -126,5 +125,4 @@ namespace Source.Features.Gameplay.Items
             _isPlaying = true;
         }
     }
-
 }
