@@ -22,8 +22,15 @@ namespace Source.Features.Gameplay.EndGame
 
         private async void ShowGameOverUI()
         {
-            var gameOverAsset = await _serviceResolver.Get<IAssetBundleService>().LoadAsset<GameOverView>("GameLostView");
-            Object.Instantiate(gameOverAsset);
+            if (_userModel.Lives > 0)
+            {
+                var gameOverAsset = await _serviceResolver.Get<IAssetBundleService>().LoadAsset<GameOverView>("GameLostView");
+                Object.Instantiate(gameOverAsset);
+            }
+            else
+            {
+                Debug.LogError("TODO: not enough lives -> display shop to buy more...");
+            }
         }
 
         private void DeductPlayerPoints()
